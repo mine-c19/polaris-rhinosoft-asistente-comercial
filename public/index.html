@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f3f4f4">
+    <title>Asistente Comercial RhinoSoft</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <main class="chat-shell">
+      <header class="chat-header">
+        <div class="brand">
+          <p class="eyebrow">RhinoSoft</p>
+          <h1 id="assistant-name"></h1>
+        </div>
+        <button class="button button-secondary new-conversation" id="new-conversation" type="button">
+          Nueva conversación
+        </button>
+      </header>
+
+      <aside class="transparency-notice" aria-label="Aviso sobre inteligencia artificial">
+        Soy una IA de demostración académica. Los datos de RhinoSoft son ficticios y las propuestas
+        son borradores sujetos a revisión humana.
+      </aside>
+
+      <section
+        class="messages"
+        id="messages"
+        aria-label="Mensajes de la conversación"
+        aria-live="polite"
+        aria-relevant="additions text"
+      >
+        <p class="empty-state" id="empty-state">Escribe una pregunta para iniciar la conversación.</p>
+      </section>
+
+      <div class="typing-indicator" id="typing-indicator" role="status" hidden>
+        <span class="typing-dots" aria-hidden="true"></span>
+        <span>Escribiendo…</span>
+      </div>
+
+      <form class="composer" id="chat-form">
+        <label class="field-label" for="message-input">Tu mensaje</label>
+        <div class="input-row">
+          <textarea
+            id="message-input"
+            name="message"
+            rows="2"
+            maxlength="2000"
+            placeholder="Escribe tu pregunta…"
+            aria-describedby="privacy-note character-count voice-status"
+            required
+          ></textarea>
+          <button
+            class="button button-icon voice-button"
+            id="dictate-button"
+            type="button"
+            aria-label="Dictar mensaje"
+            title="Dictar mensaje"
+            hidden
+          >
+            <span aria-hidden="true">🎙</span>
+          </button>
+        </div>
+        <div class="input-meta">
+          <p class="privacy-note" id="privacy-note">No escribas datos personales ni sensibles.</p>
+          <span class="character-count" id="character-count" aria-live="off">0/2000</span>
+        </div>
+        <p class="voice-status" id="voice-status" role="status" aria-live="polite"></p>
+        <div class="composer-actions">
+          <span class="keyboard-hint">Enter para enviar · Shift+Enter para salto de línea</span>
+          <button class="button button-primary" id="send-button" type="submit" disabled>
+            Enviar
+          </button>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>
