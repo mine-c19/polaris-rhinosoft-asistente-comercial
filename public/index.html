@@ -3,78 +3,144 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#f3f4f4">
-    <title>Asistente Comercial RhinoSoft</title>
+    <meta name="theme-color" content="#5B3A9E">
+    <title>Polaris · Asistente Comercial RhinoSoft</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/styles.css">
     <script type="module" src="/app.js"></script>
   </head>
   <body>
-    <main class="chat-shell">
-      <header class="chat-header">
-        <div class="brand">
-          <p class="eyebrow">RhinoSoft</p>
-          <h1 id="assistant-name"></h1>
+    <main class="page-shell">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="Polaris, inicio">
+          <span class="brand-mark" aria-hidden="true">P</span>
+          <span class="brand-name">Polaris</span>
+        </a>
+        <div class="header-actions">
+          <span class="ai-badge"><span class="status-dot" aria-hidden="true"></span>Asistente con IA · datos ficticios</span>
+          <button class="button button-outline" id="new-conversation" type="button">
+            Nueva conversación
+          </button>
         </div>
-        <button class="button button-secondary new-conversation" id="new-conversation" type="button">
-          Nueva conversación
-        </button>
       </header>
 
-      <aside class="transparency-notice" aria-label="Aviso sobre inteligencia artificial">
-        Soy una IA de demostración académica. Los datos de RhinoSoft son ficticios y las propuestas
-        son borradores sujetos a revisión humana.
-      </aside>
-
-      <section
-        class="messages"
-        id="messages"
-        aria-label="Mensajes de la conversación"
-        aria-live="polite"
-        aria-relevant="additions text"
-      >
-        <p class="empty-state" id="empty-state">Escribe una pregunta para iniciar la conversación.</p>
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">Asistente comercial · RhinoSoft</p>
+        <h1 id="page-title">Servicios, precios y propuestas,<br><span>con fuente.</span></h1>
+        <p class="intro-copy">
+          Consulta el catálogo de RhinoSoft y pide borradores de propuesta. Cada respuesta indica
+          de qué documento viene.
+        </p>
       </section>
 
-      <div class="typing-indicator" id="typing-indicator" role="status" hidden>
-        <span class="typing-dots" aria-hidden="true"></span>
-        <span>Escribiendo…</span>
-      </div>
+      <aside class="transparency-notice" aria-label="Aviso sobre inteligencia artificial">
+        <span class="notice-symbol" aria-hidden="true">i</span>
+        <p>
+          Soy una IA de demostración académica. Los datos de RhinoSoft son ficticios y las propuestas
+          son borradores sujetos a revisión humana.
+        </p>
+      </aside>
 
-      <form class="composer" id="chat-form">
-        <label class="field-label" for="message-input">Tu mensaje</label>
-        <div class="input-row">
-          <textarea
-            id="message-input"
-            name="message"
-            rows="2"
-            maxlength="2000"
-            placeholder="Escribe tu pregunta…"
-            aria-describedby="privacy-note character-count voice-status"
-            required
-          ></textarea>
-          <button
-            class="button button-icon voice-button"
-            id="dictate-button"
-            type="button"
-            aria-label="Dictar mensaje"
-            title="Dictar mensaje"
-            hidden
-          >
-            <span aria-hidden="true">🎙</span>
-          </button>
+      <section class="chat-card" aria-label="Chat con Polaris">
+        <header class="chat-card-header">
+          <span class="avatar avatar-header" aria-hidden="true">P</span>
+          <div class="chat-identity">
+            <h2 id="assistant-name"></h2>
+            <p>Asistente comercial de RhinoSoft</p>
+          </div>
+          <span class="ai-tag">IA</span>
+        </header>
+
+        <section
+          class="messages"
+          id="messages"
+          aria-label="Mensajes de la conversación"
+          aria-live="polite"
+          aria-relevant="additions text"
+        >
+          <div class="welcome" id="welcome">
+            <span class="avatar avatar-welcome" aria-hidden="true">P</span>
+            <div class="welcome-content">
+              <p class="welcome-message">
+                Hola, soy Polaris, tu asistente comercial en RhinoSoft. Puedo ayudarte con servicios,
+                precios y borradores de propuesta. ¿Qué quieres saber?
+              </p>
+              <p class="suggestion-label">Puedes empezar con una de estas preguntas</p>
+              <div class="suggestions" aria-label="Preguntas sugeridas">
+                <button class="suggestion-button" type="button">¿Qué servicios ofrece RhinoSoft?</button>
+                <button class="suggestion-button" type="button">¿Cuánto cuesta el diagnóstico?</button>
+                <button class="suggestion-button" type="button">Quiero un borrador de propuesta</button>
+                <button class="suggestion-button" type="button">¿Cómo protegen mis datos?</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="typing-indicator" id="typing-indicator" role="status" hidden>
+          <span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>Escribiendo…</span>
         </div>
-        <div class="input-meta">
-          <p class="privacy-note" id="privacy-note">No escribas datos personales ni sensibles.</p>
-          <span class="character-count" id="character-count" aria-live="off">0/2000</span>
-        </div>
-        <p class="voice-status" id="voice-status" role="status" aria-live="polite"></p>
-        <div class="composer-actions">
-          <span class="keyboard-hint">Enter para enviar · Shift+Enter para salto de línea</span>
-          <button class="button button-primary" id="send-button" type="submit" disabled>
-            Enviar
-          </button>
-        </div>
-      </form>
+
+        <form class="composer" id="chat-form">
+          <label class="field-label" for="message-input">Tu mensaje</label>
+          <div class="input-row">
+            <textarea
+              id="message-input"
+              name="message"
+              rows="2"
+              maxlength="2000"
+              placeholder="Escribe tu pregunta…"
+              aria-describedby="privacy-note character-count voice-status"
+              required
+            ></textarea>
+            <button
+              class="button button-voice"
+              id="dictate-button"
+              type="button"
+              aria-label="Iniciar dictado por voz"
+              aria-pressed="false"
+              hidden
+            >Hablar</button>
+          </div>
+          <div class="input-meta">
+            <p class="privacy-note" id="privacy-note">No escribas datos personales ni sensibles.</p>
+            <span class="character-count" id="character-count" aria-live="off">0/2000</span>
+          </div>
+          <p class="voice-status" id="voice-status" role="status" aria-live="polite"></p>
+          <div class="composer-actions">
+            <span class="keyboard-hint">Enter para enviar · Shift+Enter para salto de línea</span>
+            <button class="button button-primary" id="send-button" type="submit" disabled>
+              Enviar
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section class="info-sections" aria-label="Información sobre Polaris">
+        <details class="info-panel">
+          <summary>¿Qué sabe Polaris?</summary>
+          <ul class="document-list">
+            <li>Perfil y catálogo de servicios <span>(ficticio)</span></li>
+            <li>Precios y condiciones <span>(ficticio)</span></li>
+            <li>Preguntas frecuentes <span>(ficticio)</span></li>
+            <li>Situación y plan de transformación <span>(de la Fase 1 del proyecto)</span></li>
+            <li>Referencias oficiales <span>(real, con fuente)</span></li>
+            <li>Plantilla de propuesta comercial <span>(ficticio)</span></li>
+          </ul>
+        </details>
+
+        <details class="info-panel">
+          <summary>IA responsable en Polaris</summary>
+          <ul class="principle-list">
+            <li><strong>Equidad:</strong> misma lista de precios y condiciones para todos los clientes, sin importar tamaño o ciudad.</li>
+            <li><strong>Confiabilidad y seguridad:</strong> responde solo con su base de conocimiento; si no tiene el dato, lo dice, y rechaza temas ajenos.</li>
+            <li><strong>Privacidad y seguridad:</strong> un filtro bloquea datos personales (correo, teléfono, tarjeta, CURP, RFC de persona física) antes de enviar el mensaje al modelo.</li>
+            <li><strong>Inclusión:</strong> funciona en celular y permite dictar y escuchar las respuestas.</li>
+            <li><strong>Transparencia:</strong> avisa que es una IA y cada respuesta indica el documento de origen.</li>
+            <li><strong>Rendición de cuentas:</strong> las propuestas son borradores que la Dirección Comercial revisa y aprueba antes de enviarlas.</li>
+          </ul>
+        </details>
+      </section>
     </main>
   </body>
 </html>

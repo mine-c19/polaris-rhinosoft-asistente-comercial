@@ -1,9 +1,9 @@
-const ASSISTANT_NAME = "Asistente Comercial RhinoSoft";
+const ASSISTANT_NAME = "Polaris";
 const REQUEST_TIMEOUT_MS = 60_000;
 
 const assistantNameElement = document.querySelector("#assistant-name");
 const messagesElement = document.querySelector("#messages");
-const emptyStateElement = document.querySelector("#empty-state");
+const welcomeElement = document.querySelector("#welcome");
 const formElement = document.querySelector("#chat-form");
 const inputElement = document.querySelector("#message-input");
 const sendButton = document.querySelector("#send-button");
@@ -12,6 +12,7 @@ const typingIndicator = document.querySelector("#typing-indicator");
 const characterCount = document.querySelector("#character-count");
 const dictateButton = document.querySelector("#dictate-button");
 const voiceStatus = document.querySelector("#voice-status");
+const suggestionButtons = document.querySelectorAll(".suggestion-button");
 
 assistantNameElement.textContent = ASSISTANT_NAME;
 
@@ -53,8 +54,32 @@ function stopSpeech() {
   }
 }
 
+function splitSources(reply) {
+  const lines = reply.split(/\r?\n/u);
+  const sourceLineIndex = lines.findIndex((line) => /^Fuentes?:\s*/iu.test(line));
+  if (sourceLineIndex === -1) {
+    return { text: reply, sources: [] };
+  }
+
+  const sourceText = lines[sourceLineIndex]
+    .replace(/^Fuentes?:\s*/iu, "")
+    .trim()
+    .replace(/[.,;]\s*$/u, "");
+  const text = lines
+    .filter((_line, index) => index !== sourceLineIndex)
+    .join("\n")
+    .replace(/\n{2,}$/u, "")
+    .trim();
+  const sources = sourceText
+    .split(/[;,]/u)
+    .map((source) => source.trim().replace(/[.,;]\s*$/u, ""))
+    .filter(Boolean);
+
+  return { text, sources };
+}
+
 function addMessage(role, text, isError = false) {
-  emptyStateElement.hidden = true;
+  welcomeElement.hidden = true;
 
   const messageElement = document.createElement("article");
   messageElement.classList.add("message", `message-${role}`);
@@ -63,15 +88,27 @@ function addMessage(role, text, isError = false) {
     messageElement.setAttribute("role", "alert");
   }
 
+  if (role === "assistant") {
+    const avatar = document.createElement("span");
+    avatar.className = "avatar avatar-message";
+    avatar.setAttribute("aria-hidden", "true");
+    avatar.textContent = "P";
+    messageElement.append(avatar);
+  }
+
+  const content = document.createElement("div");
+  content.className = "message-content";
   const label = document.createElement("span");
   label.className = "message-label";
   label.textContent = role === "user" ? "Tú" : ASSISTANT_NAME;
 
+  const { text: visibleText, sources } =
+    role === "assistant" && !isError ? splitSources(text) : { text, sources: [] };
   const bubble = document.createElement("p");
   bubble.className = "message-bubble";
-  bubble.textContent = text;
+  bubble.textContent = visibleText;
 
-  messageElement.append(label, bubble);
+  content.append(label, bubble);
 
   if (role === "assistant" && !isError && canSpeak) {
     const listenButton = document.createElement("button");
@@ -81,13 +118,34 @@ function addMessage(role, text, isError = false) {
     listenButton.setAttribute("aria-label", `Escuchar respuesta de ${ASSISTANT_NAME}`);
     listenButton.addEventListener("click", () => {
       stopSpeech();
-      const utterance = new window.SpeechSynthesisUtterance(text);
+      const utterance = new window.SpeechSynthesisUtterance(visibleText);
       utterance.lang = "es-MX";
       window.speechSynthesis.speak(utterance);
     });
-    messageElement.append(listenButton);
+    content.append(listenButton);
   }
 
+  if (sources.length > 0) {
+    const sourceList = document.createElement("div");
+    sourceList.className = "source-list";
+    sourceList.setAttribute("aria-label", "Fuentes de la respuesta");
+
+    const sourceHeading = document.createElement("span");
+    sourceHeading.className = "source-heading";
+    sourceHeading.textContent = "Fuentes";
+    sourceList.append(sourceHeading);
+
+    for (const source of sources) {
+      const sourceTag = document.createElement("span");
+      sourceTag.className = "source-tag";
+      sourceTag.textContent = source;
+      sourceList.append(sourceTag);
+    }
+
+    content.append(sourceList);
+  }
+
+  messageElement.append(content);
   messagesElement.append(messageElement);
   scrollMessagesToEnd();
 }
@@ -107,6 +165,8 @@ function stopRecognition() {
     activeRecognition = null;
   }
   dictateButton.setAttribute("aria-pressed", "false");
+  dictateButton.textContent = "Hablar";
+  dictateButton.setAttribute("aria-label", "Iniciar dictado por voz");
 }
 
 function startDictation() {
@@ -122,6 +182,8 @@ function startDictation() {
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
   dictateButton.setAttribute("aria-pressed", "true");
+  dictateButton.textContent = "Detener";
+  dictateButton.setAttribute("aria-label", "Detener dictado por voz");
 
   recognition.addEventListener("result", (event) => {
     const transcript = event.results[0]?.[0]?.transcript?.trim();
@@ -143,6 +205,8 @@ function startDictation() {
       activeRecognition = null;
     }
     dictateButton.setAttribute("aria-pressed", "false");
+    dictateButton.textContent = "Hablar";
+    dictateButton.setAttribute("aria-label", "Iniciar dictado por voz");
   });
 
   try {
@@ -150,6 +214,8 @@ function startDictation() {
   } catch {
     activeRecognition = null;
     dictateButton.setAttribute("aria-pressed", "false");
+    dictateButton.textContent = "Hablar";
+    dictateButton.setAttribute("aria-label", "Iniciar dictado por voz");
     voiceStatus.textContent = "No se pudo iniciar el dictado. Inténtalo de nuevo.";
   }
 }
@@ -167,14 +233,14 @@ function startNewConversation() {
   updateCharacterCount();
   voiceStatus.textContent = "";
   setWaiting(false);
-  messagesElement.replaceChildren(emptyStateElement);
-  emptyStateElement.hidden = false;
+  messagesElement.replaceChildren(welcomeElement);
+  welcomeElement.hidden = false;
   scrollMessagesToEnd();
   inputElement.focus();
 }
 
-async function sendMessage() {
-  const message = inputElement.value.trim();
+async function sendMessage(suggestedMessage) {
+  const message = (suggestedMessage ?? inputElement.value).trim();
   if (message.length === 0 || message.length > 2000 || isWaiting) return;
 
   stopRecognition();
@@ -279,6 +345,11 @@ formElement.addEventListener("submit", (event) => {
 newConversationButton.addEventListener("click", startNewConversation);
 if (canDictate) {
   dictateButton.addEventListener("click", startDictation);
+}
+for (const suggestionButton of suggestionButtons) {
+suggestionButton.addEventListener("click", () => {
+  void sendMessage(suggestionButton.textContent);
+});
 }
 
 updateCharacterCount();
