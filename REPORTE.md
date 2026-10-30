@@ -1,10 +1,12 @@
 # Polaris: asistente comercial de RhinoSoft con Microsoft Foundry
 
 **Proyecto Integrador AI-901 · Fase 2 · Opción B** (implementar con Foundry el proyecto de la Fase 1: RhinoSoft)
+
 **Curso:** Fundamentos de IA con Tecnologías Microsoft (Infotec + Microsoft)
+
 **Autora:** Nelly Minerva Compañ Barradas · **Modalidad:** individual · **Entrega:** viernes 6 de noviembre de 2026
 
-| | |
+| Dato | Detalle |
 |---|---|
 | **Prototipo en línea** | https://polaris-rhinosoft-2799.azurewebsites.net |
 | **Repositorio** | https://github.com/mine-c19/polaris-rhinosoft-asistente-comercial |
