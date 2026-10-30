@@ -5,17 +5,12 @@ Página web de una sola vista con un chatbot. El frontend (HTML/CSS/JS sin frame
 backend Node.js con Express, y el backend conversa con un agente de Microsoft Foundry. Se
 despliega en Azure App Service (Linux, Node 24 LTS).
 
-Es un proyecto académico del curso AI-901. RhinoSoft es una empresa ficticia: una PyME mexicana de
-servicios tecnológicos cuyos procesos eran en papel (ventas, atención a clientes, inventario y
-nómina). El asistente apoya a esa empresa respondiendo preguntas sobre esos temas y ayudando a
-redactar propuestas comerciales básicas.
+Es un proyecto académico del curso AI-901. RhinoSoft es una empresa ficticia: una PyME mexicana que ya digitalizó internamente sus procesos (ventas, atención a clientes, inventario y nómina) y hoy vende esas soluciones, acompañadas con IA, a otras PyMEs. El asistente se llama Polaris: responde sobre los servicios, precios y condiciones de RhinoSoft usando solo su base de conocimiento (carpeta conocimiento/), cita la fuente y ayuda a redactar borradores de propuesta comercial.
 
 ## Alcance estricto (muy importante)
-El asistente SOLO responde sobre RhinoSoft y sus áreas: ventas, atención a clientes, inventario,
-nómina y propuestas comerciales. Si preguntan algo ajeno (clima, cultura general, matemáticas,
-cualquier otro tema), debe decir que no puede ayudar con eso porque está limitado a temas de
-RhinoSoft, sin intentar responder la pregunta ajena, y ofrecer lo que sí puede hacer.
-Esta regla vive en las instrucciones del agente de Foundry (scripts/create-agent.js), no solo aquí.
+El asistente SOLO responde sobre RhinoSoft: sus servicios, precios y condiciones, atención a clientes, su proceso de transformación digital y borradores de propuestas comerciales. Si preguntan algo ajeno (clima, cultura general, matemáticas, cualquier otro tema), debe decir que no puede ayudar con eso porque está limitado a temas de RhinoSoft, sin intentar responder la pregunta ajena, y ofrecer lo que sí puede hacer.
+Responde solo con lo que encuentra en la base de conocimiento (herramienta de búsqueda en archivos del agente). Si el dato no está, dice "No tengo ese dato en mi base de conocimiento".
+Esta regla vive en las instrucciones del agente de Foundry (definidas en scripts/create-agent.js y publicadas en Foundry), no solo aquí.
 
 ## Entorno de desarrollo
 - Windows 11 con PowerShell 7. Todos los comandos de terminal deben ser de PowerShell
@@ -33,6 +28,7 @@ Esta regla vive en las instrucciones del agente de Foundry (scripts/create-agent
 - FOUNDRY_PROJECT_ENDPOINT
 - FOUNDRY_AGENT_NAME
 - FOUNDRY_MODEL_DEPLOYMENT
+- FOUNDRY_VECTOR_STORE_ID (solo la usa scripts/create-agent.js para vincular la búsqueda en archivos)
 
 ## Arquitectura (no la cambies sin preguntar)
 - server.js: sirve public/ en "/", expone POST /api/chat y GET /health, y escucha en
@@ -55,7 +51,7 @@ Esta regla vive en las instrucciones del agente de Foundry (scripts/create-agent
   preguntar, o marcar "pendiente de confirmar".
 - Las propuestas comerciales se presentan como borrador sujeto a revisión humana.
 - No se envían datos personales ni sensibles al modelo.
-- Si se agregan citas de fuentes, deben salir de documentos reales cargados; nunca inventarlas.
+- Cada respuesta que use la base de conocimiento termina con una línea "Fuente: ..." con los documentos reales de conocimiento/ de los que viene. Nunca inventes fuentes.
 
 ## Inclusión y dispositivos
 - Debe funcionar en escritorio y en celular (se prueba a 360 px de ancho).
